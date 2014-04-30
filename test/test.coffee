@@ -64,7 +64,17 @@ describe "YAJP", ->
         assert.deepEqual yajp.parse("{'key':'value','hoge':-1.0}"), {'key':'value','hoge':-1.0}
 describe "test.json", ->
   it "パースできる", ->
-    fs.readFile "test/test.json", (e, d) ->
-      assert.equal e, undefined
-      assert.ok d
-      assert.deepEqual yajp.parse(d.toString()), JSON.parse(d.toString())
+    d = fs.readFileSync "test/test.json"
+    assert.ok d
+    assert.deepEqual yajp.parse(d.toString()), JSON.parse(d.toString())
+describe "test2.json", ->
+  d = fs.readFileSync "test/test2.json"
+  jsonobj = {}
+  it "パースできる", ->
+    assert.doesNotThrow -> jsonobj = yajp.parse(d.toString())
+    assert.ok jsonobj
+  it "ちゃんとパースしている", ->
+    # assert.deepEqual jsonobj, JSON.parse(d.toString())
+    _jsonobj = JSON.parse(d.toString())
+    assert jsonobj["total"] is _jsonobj["total"]
+    assert jsonobj["data"].length is _jsonobj["data"].length

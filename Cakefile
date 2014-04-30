@@ -9,5 +9,5 @@ task 'test','run tests', ->
 
 task 'compile','compile automate', ->
   cp.spawn "coffee"
-    , [ "-o", "lib", "-cw", "-b", "src"]
+    , [ "-o", "lib", "-c", "-b", "src"]
       ,{ stdio: 'inherit' }

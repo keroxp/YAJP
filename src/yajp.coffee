@@ -9,9 +9,10 @@ YAJP =
   COMMA_TOKEN   : ','
   PERIOD_TOKEN  : '.'
   MINUS_TOKEN   : '-'
+  NULL_CHARACTER: '\0'
   symbols: ['[',']','{','}','"',"'",':',',',".","-"]
   spaces: [' ','\n','\r','\t']   # SPACES
-  separators: ['}',']',',',':']  # SEPARATORS
+  separators: ['}',']',',',':','\0']  # SEPARATORS
   TRUE_IDENTIFIER   : 'true'
   FALSE_IDENTIFIER  : 'false'
   NULL_IDENTIFIER   : 'null'
@@ -31,7 +32,12 @@ YAJP =
   isValueToken      : (tok) -> tok.type in [@TOKEN_TYPE_STRING,@TOKEN_TYPE_BOOL,@TOKEN_TYPE_NUMBER,@TOKEN_TYPE_NULL] # string, number, bool, null
   isSymbolToken     : (tok) -> tok.type is @TOKEN_TYPE_SYMBOL # is symbol token?
   nextChar: ->  # get next character
-    if @location < @jsonstr.length then @jsonstr.charAt(++@location) else throw new Error "out of range"
+    if @location < @jsonstr.length - 1
+      @jsonstr.charAt(++@location)
+    else if @location is @jsonstr.length - 1
+      @NULL_CHARACTER
+    else
+      throw new Error "out of range"
   nextValidChar: ->
     loop return c unless @isSpace((c = @nextChar()))  # skip spaces
   backStep: -> --@location
@@ -39,7 +45,7 @@ YAJP =
     id = ""
     loop
       c = @nextValidChar()
-      if @isSeparator(c) or !c
+      if @isSeparator(c)
         @backStep()
         return id
       else if !@isIdentifier(c)
@@ -48,12 +54,18 @@ YAJP =
         id += c
   nextString: ->
     str = ""
-    loop if @isQuote((c = @nextChar())) then return str else str += c
+    loop
+      if @isQuote((c = @nextChar()))
+        d = @nextValidChar()
+        @backStep()
+        return str if @isSeparator(d)
+      else
+        str += c
   nextNumber: ->
     num = ""
     loop
       c = @nextValidChar()
-      if @isSeparator(c) or !c
+      if @isSeparator(c)
         @backStep()
         return num
       else if !@isNumberComponent(c)
@@ -67,7 +79,7 @@ YAJP =
     if @isNumberComponent(c)
       @Token(Number(c+@nextNumber()), @TOKEN_TYPE_NUMBER)     # number
     else if @isQuote(c)
-      @Token(@nextString(), @TOKEN_TYPE_STRING)             # string
+      @Token(@nextString(), @TOKEN_TYPE_STRING)               # string
     else if @isSymbol(c)
       @Token(c, @TOKEN_TYPE_SYMBOL)                           # symbol
     else
