@@ -135,8 +135,6 @@ YAJP =
         return arr if tok.val is @CLOSE_BRACKET
         throw new Error "expected , but #{tok.val}" unless tok.val is @COMMA_TOKEN
   # parse
-  parse: (str) ->
-    input = @Input(str)
-    @extractValue(input, @nextToken(input))
+  parse: (str) -> @extractValue((input = @Input(str)), @nextToken(input))
 # export
 module.exports = YAJP
