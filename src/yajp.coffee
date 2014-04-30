@@ -10,9 +10,9 @@ YAJP =
   PERIOD_TOKEN  : '.'
   MINUS_TOKEN   : '-'
   NULL_CHARACTER: '\0'
-  symbols: ['[',']','{','}','"',"'",':',',',".","-"]
-  spaces: [' ','\n','\r','\t']
-  separators: ['}',']',',',':','\0']
+  symbols       : ['[',']','{','}','"',"'",':',',',".","-"]
+  spaces        : [' ','\n','\r','\t']
+  separators    : ['}',']',',',':','\0']
   TRUE_IDENTIFIER   : 'true'
   FALSE_IDENTIFIER  : 'false'
   NULL_IDENTIFIER   : 'null'
@@ -39,8 +39,7 @@ YAJP =
       @NULL_CHARACTER
     else
       throw new Error "out of range"
-  nextValidChar: (input) ->
-    loop return c unless @isSpace((c = @nextChar(input)))  # skip spaces
+  nextValidChar: (input) -> loop return c unless @isSpace((c = @nextChar(input)))  # skip spaces
   backStep: (input) -> --input.loc
   nextIdentifier: (input) ->
     id = ""
