@@ -11,8 +11,8 @@ YAJP =
   MINUS_TOKEN   : '-'
   NULL_CHARACTER: '\0'
   symbols: ['[',']','{','}','"',"'",':',',',".","-"]
-  spaces: [' ','\n','\r','\t']   # SPACES
-  separators: ['}',']',',',':','\0']  # SEPARATORS
+  spaces: [' ','\n','\r','\t']
+  separators: ['}',']',',',':','\0']
   TRUE_IDENTIFIER   : 'true'
   FALSE_IDENTIFIER  : 'false'
   NULL_IDENTIFIER   : 'null'
